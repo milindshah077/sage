@@ -32,8 +32,8 @@ def createDiagnosticsLayout(signal, frequency, holidayDropdown, holidayScale, se
     print(signal, frequency, holidayDropdown, holidayScale, seasonalityScale, changepointScale, seasonalityMode, filename, paramSearch)
     if signal == 'VOID':
         return None
-    elif signal == 'FAILURE':
-        return html.Div('Encountered an error : ' + str(e))
+    if signal != 'NOTIFY':
+        return html.Div('Encountered an error : ' + signal, style = {'margin-left' : '1rem'})
     df = parseContents(contents, filename)
     model = generateModel(frequency, holidayDropdown, holidayScale, seasonalityScale, changepointScale, seasonalityMode, df, paramSearch)
     initial, period, horizon =  getParams(frequency, len(df))

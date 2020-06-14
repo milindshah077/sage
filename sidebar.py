@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 from app import app
 from dash.dependencies import Input, Output, State
 from utility import parseContents
+from exceptions import FileNotSupported
 
 SIDEBAR_STYLE = {
     'position' : 'fixed',
@@ -61,8 +62,10 @@ sidebar = html.Div(
             id = 'holidayDropdown',
             options = [
                 {'label' : 'India' , 'value' : 'IN' },
-                {'label' : 'Bangladesh' , 'value' : 'BD'},
+                {'label' : 'Canada' , 'value' : 'CA'},
                 {'label' : 'China' , 'value' : 'CN'},
+                {'label' : 'Japan' , 'value' : 'JP'},
+                {'label' : 'United Kingdom' , 'value' : 'UK'},
                 {'label' : 'United States' , 'value' : 'US'}
             ],
             placeholder = 'Choose a country'
@@ -71,7 +74,7 @@ sidebar = html.Div(
         dcc.Checklist(
             id='paramSearch',
             options = [
-                {'label' : ' Find the best parameters for me', 'value' : 1}
+                {'label' : ' Find suitable parameters for me', 'value' : 1}
             ],
             style = {
                 'padding-top': '1rem', 'font-weight': 'bold'
@@ -87,7 +90,7 @@ sidebar = html.Div(
         
         
         html.Div([html.Span('Trend Changes Scale: ', style = {'font-weight' : 'bold'}), 'Increase to fit more flexible model'], style = {'padding-top' : '1rem'}),
-        dcc.Input(id= 'changepointScale', type='number', value =0.05, min = 0, max = 1, step = 0.01, debounce = True, style = {'width' : '80%'}),
+        dcc.Input(id= 'changepointScale', type='number', value =0.1, min = 0, max = 1, step = 0.1, debounce = True, style = {'width' : '80%'}),
         
 
         html.Div([html.Span('Seasonality Mode: ', style = {'font-weight' : 'bold'}), 'Use multiplicative if seasonal/holiday effect increases with time'], style = {'padding-top' : '1rem'}),
@@ -191,7 +194,10 @@ def validate(contents, holidayScale, seasonalityScale, changepointScale, frequen
 )
 def validate(paramSearch):
     if paramSearch is not None  and 1 in paramSearch:
-        return [{'disabled' : True}], True, True, True
+        return [
+                {'label' : 'Additive' , 'value' : 'additive', 'disabled' : True },
+                {'label' : 'Multiplicative' , 'value' : 'multiplicative', 'disabled' : True}
+            ], True, True, True
     else:
         return [
                 {'label' : 'Additive' , 'value' : 'additive' },
